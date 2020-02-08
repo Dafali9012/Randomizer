@@ -4,12 +4,16 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Randomizer {
     private static final Randomizer instance = new Randomizer();
     private List<String> options = new ArrayList<>();
     private Path optionsPath = Paths.get("options.cfg");
     private SecureRandom sr = new SecureRandom();
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_CLEAR = "\u001B[0m";
 
     private Randomizer() {
         loadOptions();
@@ -24,7 +28,14 @@ public class Randomizer {
             System.out.println("No options available, edit the options config.");
         } else {
             int index = sr.nextInt(options.size());
-            System.out.println(options.get(index));
+            List<String> noDuplicates = options.stream().distinct().collect(Collectors.toList());
+            for(int i = 0; i < noDuplicates.size(); i++) {
+                if(noDuplicates.get(i).equals(options.get(index))) {
+                    System.out.println("< "+noDuplicates.get(i)+" >");
+                } else {
+                    System.out.println(noDuplicates.get(i));
+                }
+            }
         }
     }
 
